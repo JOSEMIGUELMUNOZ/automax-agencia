@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financiamiento - AutoMax</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Auto<span>Max</span></h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/autos">Vehículos</a></li>
+                        <li><a href="/citas">Citas</a></li>
+                        <li><a href="/enganche" class="active">Financiamiento</a></li>
+                        <li><a href="/perfil">Mi Perfil</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 2rem;">
+        <section class="section">
+            <h2>Calculadora de Financiamiento</h2>
+            
+            <div class="form-container">
+                <div id="auto-seleccionado" style="display: none; background: #e8f5e8; padding: 1rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <h3 style="color: #27ae60; margin-bottom: 0.5rem;">Vehículo Seleccionado</h3>
+                    <div id="info-auto-seleccionado"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="selector-auto">Selecciona un Vehículo *</label>
+                    <select id="selector-auto" required>
+                        <option value="">Cargando vehículos...</option>
+                    </select>
+                </div>
+
+                <div class="enganche-calculator">
+                    <h3 style="margin-bottom: 1.5rem; text-align: center;">💰 Personaliza tu Financiamiento</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="enganche">Enganche (MXN) *</label>
+                            <input type="number" id="enganche" min="10000" step="1000" placeholder="Ej: 50000" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3); color: white;" required>
+                            <small style="color: rgba(255,255,255,0.8);">Mínimo: $10,000</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="mensualidades">Número de Mensualidades *</label>
+                            <select id="mensualidades" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3); color: white;" required>
+                                <option value="">Selecciona...</option>
+                                <option value="12">12 meses</option>
+                                <option value="24">24 meses</option>
+                                <option value="36">36 meses</option>
+                                <option value="48">48 meses</option>
+                                <option value="60">60 meses</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="calcularFinanciamiento()" class="btn" style="width: 100%; margin: 1rem 0; background: rgba(255,255,255,0.2); border: 2px solid white;">
+                        Calcular Financiamiento
+                    </button>
+
+                    <div id="resultado-calculo" class="calculator-result" style="display: none;">
+                        <h4 style="margin-bottom: 1rem; text-align: center;">📊 Detalles de tu Financiamiento</h4>
+                        <div id="detalles-calculo"></div>
+                    </div>
+                </div>
+
+                <div id="form-solicitud" style="display: none; margin-top: 2rem; background: white; padding: 2rem; border-radius: 15px;">
+                    <h3 style="color: #2c3e50; margin-bottom: 1.5rem; text-align: center;">📋 Solicitar Financiamiento</h3>
+                    
+                    <form id="form-enganche">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nombre-eng">Nombre Completo *</label>
+                                <input type="text" id="nombre-eng" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email-eng">Correo Electrónico *</label>
+                                <input type="email" id="email-eng" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="telefono-eng">Teléfono *</label>
+                                <input type="tel" id="telefono-eng" required placeholder="(899) 123-4567">
+                            </div>
+                            <div class="form-group">
+                                <label for="ocupacion">Ocupación *</label>
+                                <input type="text" id="ocupacion" required placeholder="Ej: Ingeniero, Comerciante">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="ingresos">Ingresos Mensuales (MXN) *</label>
+                                <input type="number" id="ingresos" required min="8000" placeholder="Ej: 25000">
+                            </div>
+                            <div class="form-group">
+                                <label for="antiguedad">Antigüedad Laboral *</label>
+                                <select id="antiguedad" required>
+                                    <option value="">Selecciona...</option>
+                                    <option value="menos-6">Menos de 6 meses</option>
+                                    <option value="6-12">6 meses - 1 año</option>
+                                    <option value="1-3">1 - 3 años</option>
+                                    <option value="3-mas">Más de 3 años</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="background: #fff3cd; padding: 1rem; border-radius: 10px; margin: 1.5rem 0; border-left: 4px solid #ffc107;">
+                            <h4 style="color: #856404; margin-bottom: 0.5rem;">📋 Documentos Requeridos</h4>
+                            <ul style="color: #856404; margin-left: 1rem; font-size: 0.9rem;">
+                                <li>Identificación oficial vigente</li>
+                                <li>Comprobante de domicilio (no mayor a 3 meses)</li>
+                                <li>Comprobantes de ingresos (últimos 3 meses)</li>
+                                <li>Estado de cuenta bancario</li>
+                                <li>Referencias personales y comerciales</li>
+                            </ul>
+                        </div>
+
+                        <button type="submit" class="btn" style="width: 100%;">
+                            Enviar Solicitud de Financiamiento
+                        </button>
+                    </form>
+                </div>
+
+                <div id="resultado-enganche" style="margin-top: 2rem; display: none;"></div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>¿Por Qué Elegir Nuestro Financiamiento?</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem; color: #27ae60;">💡</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 0.5rem;">Tasas Competitivas</h3>
+                    <p style="color: #666;">Ofrecemos las mejores tasas de interés del mercado para que pagues menos.</p>
+                </div>
+                
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem; color: #27ae60;">⚡</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 0.5rem;">Aprobación Rápida</h3>
+                    <p style="color: #666;">Respuesta en 24 horas hábiles para que no esperes más por tu auto.</p>
+                </div>
+                
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem; color: #27ae60;">🔧</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 0.5rem;">Planes Flexibles</h3>
+                    <p style="color: #666;">Adaptamos las mensualidades a tu capacidad de pago y presupuesto.</p>
+                </div>
+                
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem; color: #27ae60;">🛡️</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 0.5rem;">Sin Penalizaciones</h3>
+                    <p style="color: #666;">Puedes pagar anticipadamente sin comisiones adicionales.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 AutoMax - Agencia de Autos Premium. Todos los derechos reservados.</p>
+            <p>📧 contacto@automax.com | 📞 (899) 123-4567 | 📍 Reynosa, Tamaulipas</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        let autos = [];
+        let autoSeleccionado = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarAutos();
+            
+            // Obtener parámetros de URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const autoId = urlParams.get('auto');
+            
+            if (autoId) {
+                setTimeout(() => {
+                    document.getElementById('selector-auto').value = autoId;
+                    seleccionarAuto();
+                }, 500);
+            }
+
+            // Configurar eventos
+            document.getElementById('selector-auto').addEventListener('change', seleccionarAuto);
+            document.getElementById('form-enganche').addEventListener('submit', enviarSolicitud);
+            
+            // Auto-calcular cuando cambien los valores
+            document.getElementById('enganche').addEventListener('input', calcularFinanciamiento);
+            document.getElementById('mensualidades').addEventListener('change', calcularFinanciamiento);
+        });
+
+        async function cargarAutos() {
+            try {
+                const response = await fetch('/api/autos');
+                autos = await response.json();
+                
+                const selector = document.getElementById('selector-auto');
+                selector.innerHTML = '<option value="">Selecciona un vehículo...</option>';
+                
+                autos.forEach(auto => {
+                    const option = document.createElement('option');
+                    option.value = auto.id;
+                    option.textContent = `${auto.marca} ${auto.modelo} ${auto.año} - ${auto.precio.toLocaleString()}`;
+                    selector.appendChild(option);
+                });
+                
+            } catch (error) {
+                console.error('Error al cargar autos:', error);
+                document.getElementById('selector-auto').innerHTML = '<option value="">Error al cargar vehículos</option>';
+            }
+        }
+
+        function seleccionarAuto() {
+            const autoId = document.getElementById('selector-auto').value;
+            if (!autoId) {
+                autoSeleccionado = null;
+                document.getElementById('auto-seleccionado').style.display = 'none';
+                document.getElementById('resultado-calculo').style.display = 'none';
+                document.getElementById('form-solicitud').style.display = 'none';
+                return;
+            }
+
+            autoSeleccionado = autos.find(auto => auto.id == autoId);
+            if (autoSeleccionado) {
+                mostrarAutoSeleccionado();
+                
+                // Establecer enganche sugerido (20% del precio)
+                const engancheSugerido = Math.round(autoSeleccionado.precio * 0.2);
+                document.getElementById('enganche').value = engancheSugerido;
+                document.getElementById('mensualidades').value = '36';
+                
+                calcularFinanciamiento();
+            }
+        }
+
+        function mostrarAutoSeleccionado() {
+            const container = document.getElementById('auto-seleccionado');
+            const info = document.getElementById('info-auto-seleccionado');
+            
+            info.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <img src="${autoSeleccionado.imagen}" alt="${autoSeleccionado.marca} ${autoSeleccionado.modelo}" style="width: 120px; height: 80px; object-fit: cover; border-radius: 10px;">
+                    <div>
+                        <h4 style="color: #27ae60; margin-bottom: 0.25rem;">${autoSeleccionado.marca} ${autoSeleccionado.modelo} ${autoSeleccionado.año}</h4>
+                        <p style="margin: 0; color: #666; font-size: 0.9rem;">${autoSeleccionado.tipo} | ${autoSeleccionado.transmision}</p>
+                        <p style="margin: 0; color: #27ae60; font-weight: bold; font-size: 1.2rem;">${autoSeleccionado.precio.toLocaleString()}</p>
+                    </div>
+                </div>
+            `;
+            
+            container.style.display = 'block';
+        }
+
+        function calcularFinanciamiento() {
+            if (!autoSeleccionado) return;
+
+            const enganche = parseFloat(document.getElementById('enganche').value) || 0;
+            const mensualidades = parseInt(document.getElementById('mensualidades').value) || 0;
+
+            if (enganche < 10000) {
+                document.getElementById('resultado-calculo').style.display = 'none';
+                document.getElementById('form-solicitud').style.display = 'none';
+                return;
+            }
+
+            if (!mensualidades) {
+                document.getElementById('resultado-calculo').style.display = 'none';
+                document.getElementById('form-solicitud').style.display = 'none';
+                return;
+            }
+
+            const precioTotal = autoSeleccionado.precio;
+            const montoFinanciar = precioTotal - enganche;
+            
+            // Simular tasa de interés (8% anual)
+            const tasaAnual = 0.08;
+            const tasaMensual = tasaAnual / 12;
+            
+            // Fórmula de pago mensual con interés compuesto
+            let pagoMensual;
+            if (tasaMensual > 0) {
+                pagoMensual = montoFinanciar * (tasaMensual * Math.pow(1 + tasaMensual, mensualidades)) / (Math.pow(1 + tasaMensual, mensualidades) - 1);
+            } else {
+                pagoMensual = montoFinanciar / mensualidades;
+            }
+            
+            const totalPagar = enganche + (pagoMensual * mensualidades);
+            const interesTotal = totalPagar - precioTotal;
+            const porcentajeEnganche = (enganche / precioTotal * 100).toFixed(1);
+
+            const detalles = document.getElementById('detalles-calculo');
+            detalles.innerHTML = `
+                <div class="result-item">
+                    <span>Precio del vehículo:</span>
+                    <span>${precioTotal.toLocaleString()}</span>
+                </div>
+                <div class="result-item">
+                    <span>Enganche (${porcentajeEnganche}%):</span>
+                    <span>${enganche.toLocaleString()}</span>
+                </div>
+                <div class="result-item">
+                    <span>Monto a financiar:</span>
+                    <span>${montoFinanciar.toLocaleString()}</span>
+                </div>
+                <div class="result-item">
+                    <span>Pago mensual:</span>
+                    <span>${pagoMensual.toLocaleString()}</span>
+                </div>
+                <div class="result-item">
+                    <span>Plazo:</span>
+                    <span>${mensualidades} meses</span>
+                </div>
+                <div class="result-item">
+                    <span>Intereses totales:</span>
+                    <span>${interesTotal.toLocaleString()}</span>
+                </div>
+                <div class="result-item total">
+                    <span>Total a pagar:</span>
+                    <span>${totalPagar.toLocaleString()}</span>
+                </div>
+            `;
+
+            document.getElementById('resultado-calculo').style.display = 'block';
+            document.getElementById('form-solicitud').style.display = 'block';
+        }
+
+        async function enviarSolicitud(e) {
+            e.preventDefault();
+            
+            if (!autoSeleccionado) {
+                mostrarResultado('error', 'Debes seleccionar un vehículo primero.');
+                return;
+            }
+
+            const formData = new FormData(e.target);
+            const datos = {
+                autoId: autoSeleccionado.id,
+                nombre: formData.get('nombre') || document.getElementById('nombre-eng').value,
+                email: formData.get('email') || document.getElementById('email-eng').value,
+                telefono: formData.get('telefono') || document.getElementById('telefono-eng').value,
+                ocupacion: document.getElementById('ocupacion').value,
+                ingresos: parseFloat(document.getElementById('ingresos').value),
+                antiguedad: document.getElementById('antiguedad').value,
+                enganche: parseFloat(document.getElementById('enganche').value),
+                mensualidades: parseInt(document.getElementById('mensualidades').value)
+            };
+
+            // Validaciones
+            if (!datos.nombre || !datos.email || !datos.telefono || !datos.ocupacion || !datos.ingresos || !datos.antiguedad || !datos.enganche || !datos.mensualidades) {
+                mostrarResultado('error', 'Por favor completa todos los campos obligatorios.');
+                return;
+            }
+
+            if (datos.enganche < 10000) {
+                mostrarResultado('error', 'El enganche mínimo es de $10,000.');
+                return;
+            }
+
+            if (datos.ingresos < 8000) {
+                mostrarResultado('error', 'Los ingresos mínimos requeridos son de $8,000.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/enganches', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(datos)
+                });
+
+                const resultado = await response.json();
+
+                if (resultado.success) {
+                    mostrarResultado('success', `
+                        ¡Solicitud de financiamiento enviada exitosamente! 🎉<br><br>
+                        <strong>Detalles de tu solicitud:</strong><br>
+                        🚗 Vehículo: ${autoSeleccionado.marca} ${autoSeleccionado.modelo}<br>
+                        💰 Enganche: ${datos.enganche.toLocaleString()}<br>
+                        📅 Plazo: ${datos.mensualidades} meses<br>
+                        📧 Te contactaremos en las próximas 24 horas al: ${datos.email}<br><br>
+                        <strong>¡Gracias por confiar en AutoMax!</strong>
+                    `);
+                    
+                    // Limpiar formulario
+                    document.getElementById('form-enganche').reset();
+                    
+                    // Redirigir al perfil después de unos segundos
+                    setTimeout(() => {
+                        window.location.href = '/perfil';
+                    }, 5000);
+                } else {
+                    mostrarResultado('error', 'Error al enviar la solicitud. Por favor intenta nuevamente.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarResultado('error', 'Error de conexión. Por favor verifica tu internet e intenta nuevamente.');
+            }
+        }
+
+        function mostrarResultado(tipo, mensaje) {
+            const resultado = document.getElementById('resultado-enganche');
+            resultado.className = `alert alert-${tipo === 'success' ? 'success' : 'error'}`;
+            resultado.innerHTML = mensaje;
+            resultado.style.display = 'block';
+            
+            // Scroll hacia el resultado
+            resultado.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

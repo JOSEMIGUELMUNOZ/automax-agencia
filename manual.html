@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Línea del Tiempo - Constituciones de México</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            color: #2c5530;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .timeline-container {
+            overflow-x: auto;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .timeline {
+            display: flex;
+            position: relative;
+            min-width: 2800px;
+            padding: 50px 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 40px;
+            right: 40px;
+            height: 4px;
+            background: linear-gradient(to right, #c41e3a, #228b22, #c41e3a, #228b22, #c41e3a);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 350px;
+            margin-right: 50px;
+            z-index: 2;
+        }
+
+        .timeline-item:last-child {
+            margin-right: 0;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: #c41e3a;
+            border: 4px solid #fff;
+            border-radius: 50%;
+            z-index: 10;
+            box-shadow: 0 0 0 4px rgba(196, 30, 58, 0.3);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            margin-top: 40px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .content::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid rgba(255, 255, 255, 0.95);
+        }
+
+        .year {
+            background: #2c5530;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+
+        .constitution-title {
+            color: #c41e3a;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 12px;
+            border-left: 4px solid #c41e3a;
+            padding-left: 12px;
+            line-height: 1.3;
+        }
+
+        .section {
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            color: #2c5530;
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section-content {
+            color: #555;
+            margin-bottom: 8px;
+            text-align: justify;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .protagonistas {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 8px;
+            border-left: 3px solid #2c5530;
+            font-size: 0.85em;
+        }
+
+        .flag-icon {
+            width: 40px;
+            height: 30px;
+            background: linear-gradient(to right, #228b22 33%, #fff 33% 66%, #c41e3a 66%);
+            border: 1px solid #ddd;
+            margin-right: 10px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .scroll-hint {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .page-break {
+            page-break-before: always;
+            margin-top: 30px;
+        }
+
+        .segunda-pagina {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .resumen-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            width: 45%;
+            min-width: 300px;
+        }
+
+        .resumen-title {
+            color: #2c5530;
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        @media print {
+            body { background: white; }
+            .timeline-container { background: white; }
+        }
+
+        @media (max-width: 768px) {
+            .timeline {
+                min-width: 2000px;
+            }
+            .timeline-item {
+                width: 280px;
+                margin-right: 30px;
+            }
+            .content {
+                padding: 15px;
+            }
+            .resumen-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="flag-icon"></div>
+            <h1>Constituciones de México</h1>
+            <p>Evolución del Marco Jurídico Nacional (1813-1917)</p>
+        </div>
+
+        <div class="scroll-hint">← Desliza horizontalmente para ver toda la línea del tiempo →</div>
+
+        <div class="timeline-container">
+            <div class="timeline">
+                <!-- Congreso de Chilpancingo 1813 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="content">
+                        <div class="year">1813</div>
+                        <div class="constitution-title">Congreso de Chilpancingo</div>
+                        
+                        <div class="section">
+                            <div class="section-title">Contenido</div>
+                            <div class="section-content">Declaró la independencia de México y estableció los primeros principios constitucionales. Proclamó la soberanía popular y la división de poderes.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Principales Leyes</div>
+                            <div class="section-content">• Declaración formal de independencia<br>• Establecimiento de soberanía nacional<br>• Abolición de la esclavitud<br>• División de poderes</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Contexto Histórico</div>
+                            <div class="section-content">Guerra de Independencia. Tras la muerte de Hidalgo, Morelos convoca el congreso para dar legitimidad jurídica al movimiento insurgente.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Protagonistas</div>
+                            <div class="section-content protagonistas">José María Morelos y Pavón, Ignacio López Rayón, Carlos María de Bustamante, José Manuel Herrera</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Constitución de Apatzingán 1814 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="content">
+                        <div class="year">1814</div>
+                        <div class="constitution-title">Constitución de Apatzingán</div>
+                        
+                        <div class="section">
+                            <div class="section-title">Contenido</div>
+                            <div class="section-content">Primera Constitución mexicana. Sistema republicano federal con derechos individuales y organización democrática del poder público.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Principales Leyes</div>
+                            <div class="section-content">• Declaración de derechos del hombre<br>• Sistema republicano representativo<br>• Poder Ejecutivo colegiado<br>• Libertad de expresión<br>• Igualdad ante la ley</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Contexto Histórico</div>
+                            <div class="section-content">Durante la Guerra de Independencia. Nunca entró en vigor por la situación bélica. Ideal republicano y liberal de los insurgentes.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Protagonistas</div>
+                            <div class="section-content protagonistas">José María Morelos, José Manuel Herrera, Andrés Quintana Roo, Carlos María de Bustamante</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Constitución de 1824 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="content">
+                        <div class="year">1824</div>
+                        <div class="constitution-title">Constitución Federal de 1824</div>
+                        
+                        <div class="section">
+                            <div class="section-title">Contenido</div>
+                            <div class="section-content">República Federal Mexicana dividida en estados libres y soberanos. Modelo estadounidense adaptado a la realidad mexicana.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Principales Leyes</div>
+                            <div class="section-content">• Sistema federal de gobierno<br>• 19 estados y 4 territorios<br>• Presidente y Vicepresidente (4 años)<br>• Congreso bicameral<br>• Religión católica oficial</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Contexto Histórico</div>
+                            <div class="section-content">Tras la independencia y el Imperio de Iturbide. Influencia de ideas liberales y modelo federalista estadounidense.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Protagonistas</div>
+                            <div class="section-content protagonistas">Miguel Ramos Arizpe (Padre del Federalismo), Guadalupe Victoria, Lorenzo de Zavala, Valentín Gómez Farías</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reforma Liberal 1833 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="content">
+                        <div class="year">1833</div>
+                        <div class="constitution-title">Reforma Liberal</div>
+                        
+                        <div class="section">
+                            <div class="section-title">Contenido</div>
+                            <div class="section-content">Reformas para modernizar México mediante secularización, educación pública y limitación del poder clerical y militar.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Principales Leyes</div>
+                            <div class="section-content">• Supresión de fueros eclesiásticos<br>• Clausura Universidad Pontificia<br>• Secularización de misiones<br>• Libertad de opiniones políticas</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Contexto Histórico</div>
+                            <div class="section-content">Primera gran reforma liberal. Intento de separar Iglesia y Estado, modernizar educación, enfrentando oposición conservadora.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Protagonistas</div>
+                            <div class="section-content protagonistas">Valentín Gómez Farías (vicepresidente reformador), José María Luis Mora (ideólogo), Lorenzo de Zavala</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revolución de Ayutla y Constitución de 1857 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="content">
+                        <div class="year">1854-1857</div>
+                        <div class="constitution-title">Revolución de Ayutla y Constitución 1857</div>
+                        
+                        <div class="section">
+                            <div class="section-title">Contenido</div>
+                            <div class="section-content">Derrocamiento de Santa Anna. Constitución liberal con garantías individuales, federalismo y separación de poderes.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Principales Leyes</div>
+                            <div class="section-content">• Derechos del hombre<br>• Libertad de enseñanza y trabajo<br>• Libertad de expresión<br>• Abolición de fueros<br>• Juicio de amparo</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Contexto Histórico</div>
+                            <div class="section-content">Tras inestabilidad política y dictadura santannista. Movimiento liberal modernizador que desencadena Guerra de Reforma.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Protagonistas</div>
+                            <div class="section-content protagonistas">Juan Álvarez, Ignacio Comonfort, Benito Juárez, Melchor Ocampo, Guillermo Prieto, Ponciano Arriaga</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plan de Tacubaya y Proclama de Juárez -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="content">
+                        <div class="year">1857-1861</div>
+                        <div class="constitution-title">Plan de Tacubaya y Proclama de Juárez</div>
+                        
+                        <div class="section">
+                            <div class="section-title">Contenido</div>
+                            <div class="section-content">Plan de Tacubaya desconoció Constitución 1857 iniciando Guerra de Reforma. Proclama de Juárez reafirmó vigencia constitucional.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Principales Leyes</div>
+                            <div class="section-content">• Derogación Constitución 1857<br>• Leyes de Reforma<br>• Nacionalización bienes eclesiásticos<br>• Separación Iglesia-Estado<br>• Matrimonio civil</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Contexto Histórico</div>
+                            <div class="section-content">Guerra civil entre liberales y conservadores (1858-1861). Conservadores apoyados por la Iglesia. Juárez gobierna desde Veracruz.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Protagonistas</div>
+                            <div class="section-content protagonistas">Benito Juárez (presidente constitucional), Félix Zuloaga, Miguel Miramón, Melchor Ocampo, Santos Degollado</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Constitución de 1917 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="content">
+                        <div class="year">1917</div>
+                        <div class="constitution-title">Constitución de 1917</div>
+                        
+                        <div class="section">
+                            <div class="section-title">Contenido</div>
+                            <div class="section-content">Constitución revolucionaria con derechos sociales avanzados. Justicia social, reforma agraria y derechos laborales. Vigente actualmente.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Principales Leyes</div>
+                            <div class="section-content">• Art. 3°: Educación laica obligatoria<br>• Art. 27: Propiedad nacional tierras/aguas<br>• Art. 123: Derechos laborales<br>• Garantías individuales y sociales</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Contexto Histórico</div>
+                            <div class="section-content">Revolución Mexicana (1910-1920). Congreso Constituyente en Querétaro para crear carta magna con demandas sociales revolucionarias.</div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Protagonistas</div>
+                            <div class="section-content protagonistas">Venustiano Carranza (Primer Jefe), Francisco J. Múgica, Heriberto Jara, Luis Manuel Rojas, Alfonso Cravioto</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <div class="segunda-pagina">
+            <div class="resumen-card">
+                <div class="resumen-title">Evolución de Derechos Fundamentales</div>
+                <div class="section-content">
+                    <strong>1813-1814:</strong> Primeros derechos individuales y abolición de esclavitud.<br><br>
+                    <strong>1824:</strong> Federalismo y representación democrática.<br><br>
+                    <strong>1833:</strong> Separación Iglesia-Estado y libertad de opinión.<br><br>
+                    <strong>1857:</strong> Amplio catálogo de garantías individuales y juicio de amparo.<br><br>
+                    <strong>1917:</strong> Incorporación de derechos sociales (educación, trabajo, tierra).
+                </div>
+            </div>
+
+            <div class="resumen-card">
+                <div class="resumen-title">Principales Conflictos Constitucionales</div>
+                <div class="section-content">
+                    <strong>Guerra de Independencia (1810-1821):</strong> Constitución de Apatzingán no pudo aplicarse.<br><br>
+                    <strong>Conflictos Federalismo vs Centralismo:</strong> Constitución 1824 vs regímenes centralistas.<br><br>
+                    <strong>Guerra de Reforma (1858-1861):</strong> Liberales vs Conservadores por Constitución 1857.<br><br>
+                    <strong>Revolución Mexicana (1910-1920):</strong> Necesidad de nueva constitución social.
+                </div>
+            </div>
+
+            <div class="resumen-card">
+                <div class="resumen-title">Características Principales por Época</div>
+                <div class="section-content">
+                    <strong>Época Independentista (1813-1821):</strong> Soberanía popular, abolición esclavitud, división poderes.<br><br>
+                    <strong>México Independiente (1824-1857):</strong> Federalismo, república representativa, conflictos Iglesia-Estado.<br><br>
+                    <strong>Época Liberal (1857-1910):</strong> Garantías individuales, secularización, modernización.<br><br>
+                    <strong>Época Revolucionaria (1917):</strong> Derechos sociales, justicia social, Estado interventor.
+                </div>
+            </div>
+
+            <div class="resumen-card">
+                <div class="resumen-title">Legado Constitucional</div>
+                <div class="section-content">
+                    La evolución constitucional mexicana muestra la constante búsqueda de un equilibrio entre:<br><br>
+                    • <strong>Libertad individual vs. Justicia social</strong><br>
+                    • <strong>Federalismo vs. Centralismo</strong><br>
+                    • <strong>Laicismo vs. Tradición religiosa</strong><br>
+                    • <strong>Democracia representativa vs. Participación popular</strong><br><br>
+                    La Constitución de 1917, aún vigente con múltiples reformas, sintetiza esta evolución histórica.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,272 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar Cita - AutoMax</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Auto<span>Max</span></h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/autos">Vehículos</a></li>
+                        <li><a href="/citas" class="active">Citas</a></li>
+                        <li><a href="/enganche">Financiamiento</a></li>
+                        <li><a href="/perfil">Mi Perfil</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 2rem;">
+        <section class="section">
+            <h2>Agendar Cita</h2>
+            
+            <div class="form-container">
+                <div id="auto-seleccionado" style="display: none; background: #e3f2fd; padding: 1rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <h3 style="color: #1976d2; margin-bottom: 0.5rem;">Vehículo de Interés</h3>
+                    <div id="info-auto-seleccionado"></div>
+                </div>
+
+                <form id="form-cita">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombre">Nombre Completo *</label>
+                            <input type="text" id="nombre" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo Electrónico *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="telefono">Número de Teléfono *</label>
+                            <input type="tel" id="telefono" name="telefono" required placeholder="Ej: (899) 123-4567">
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha">Fecha Preferida *</label>
+                            <input type="date" id="fecha" name="fecha" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hora">Horario Preferido *</label>
+                        <select id="hora" name="hora" required>
+                            <option value="">Selecciona un horario</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                            <option value="17:00">5:00 PM</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mensaje">Mensaje Adicional (Opcional)</label>
+                        <textarea id="mensaje" name="mensaje" rows="4" placeholder="Cuéntanos más sobre tus necesidades, presupuesto o cualquier pregunta específica..."></textarea>
+                    </div>
+
+                    <div style="background: #fff3cd; padding: 1rem; border-radius: 10px; margin: 1rem 0; border-left: 4px solid #ffc107;">
+                        <h4 style="color: #856404; margin-bottom: 0.5rem;">📋 Información Importante</h4>
+                        <ul style="color: #856404; margin-left: 1rem;">
+                            <li>Las citas están sujetas a disponibilidad</li>
+                            <li>Te contactaremos para confirmar tu cita en las próximas 2 horas</li>
+                            <li>Si necesitas reagendar, háznoslo saber con 24 horas de anticipación</li>
+                            <li>Trae una identificación oficial para la visita</li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%;">
+                        Agendar Cita
+                    </button>
+                </form>
+
+                <div id="resultado-cita" style="margin-top: 2rem; display: none;"></div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>¿Qué Esperar en Tu Cita?</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem; color: #74b9ff;">🚗</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 0.5rem;">Inspección del Vehículo</h3>
+                    <p style="color: #666;">Conoce a detalle las características y especificaciones del auto que te interesa.</p>
+                </div>
+                
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem; color: #74b9ff;">🔧</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 0.5rem;">Prueba de Manejo</h3>
+                    <p style="color: #666;">Experimenta cómo se siente el vehículo en carretera con una prueba supervisada.</p>
+                </div>
+                
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem; color: #74b9ff;">💰</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 0.5rem;">Opciones de Financiamiento</h3>
+                    <p style="color: #666;">Revisaremos las mejores opciones de pago y financiamiento para ti.</p>
+                </div>
+                
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem; color: #74b9ff;">📋</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 0.5rem;">Documentación</h3>
+                    <p style="color: #666;">Te explicaremos todos los documentos necesarios para finalizar tu compra.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 AutoMax - Agencia de Autos Premium. Todos los derechos reservados.</p>
+            <p>📧 contacto@automax.com | 📞 (899) 123-4567 | 📍 Reynosa, Tamaulipas</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        let autoSeleccionadoId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener parámetros de URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const autoId = urlParams.get('auto');
+            
+            if (autoId) {
+                cargarAutoSeleccionado(autoId);
+            }
+
+            // Establecer fecha mínima (hoy)
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('fecha').setAttribute('min', hoy);
+
+            // Configurar el formulario
+            document.getElementById('form-cita').addEventListener('submit', enviarCita);
+        });
+
+        async function cargarAutoSeleccionado(autoId) {
+            try {
+                const response = await fetch(`/api/auto/${autoId}`);
+                if (response.ok) {
+                    const auto = await response.json();
+                    autoSeleccionadoId = autoId;
+                    mostrarAutoSeleccionado(auto);
+                }
+            } catch (error) {
+                console.error('Error al cargar auto:', error);
+            }
+        }
+
+        function mostrarAutoSeleccionado(auto) {
+            const container = document.getElementById('auto-seleccionado');
+            const info = document.getElementById('info-auto-seleccionado');
+            
+            info.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <img src="${auto.imagen}" alt="${auto.marca} ${auto.modelo}" style="width: 100px; height: 70px; object-fit: cover; border-radius: 10px;">
+                    <div>
+                        <h4 style="color: #1976d2; margin-bottom: 0.25rem;">${auto.marca} ${auto.modelo} ${auto.año}</h4>
+                        <p style="margin: 0; color: #666; font-size: 0.9rem;">${auto.tipo} | ${auto.transmision} | $${auto.precio.toLocaleString()}</p>
+                    </div>
+                </div>
+            `;
+            
+            container.style.display = 'block';
+        }
+
+        async function enviarCita(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const datos = {
+                nombre: formData.get('nombre'),
+                email: formData.get('email'),
+                telefono: formData.get('telefono'),
+                fecha: formData.get('fecha'),
+                hora: formData.get('hora'),
+                mensaje: formData.get('mensaje') || '',
+                autoId: autoSeleccionadoId
+            };
+
+            // Validar campos
+            if (!datos.nombre || !datos.email || !datos.telefono || !datos.fecha || !datos.hora) {
+                mostrarResultado('error', 'Por favor completa todos los campos obligatorios.');
+                return;
+            }
+
+            // Validar fecha no sea en el pasado
+            const fechaSeleccionada = new Date(datos.fecha);
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            
+            if (fechaSeleccionada < hoy) {
+                mostrarResultado('error', 'La fecha de la cita debe ser hoy o posterior.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/citas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(datos)
+                });
+
+                const resultado = await response.json();
+
+                if (resultado.success) {
+                    mostrarResultado('success', `
+                        ¡Cita agendada exitosamente! 🎉<br><br>
+                        <strong>Detalles de tu cita:</strong><br>
+                        📅 Fecha: ${new Date(datos.fecha).toLocaleDateString('es-MX', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        })}<br>
+                        🕒 Hora: ${datos.hora}<br>
+                        📧 Te enviaremos un email de confirmación a: ${datos.email}<br><br>
+                        <strong>¡Nos vemos pronto en AutoMax!</strong>
+                    `);
+                    
+                    // Limpiar formulario
+                    document.getElementById('form-cita').reset();
+                    
+                    // Redirigir al perfil después de unos segundos
+                    setTimeout(() => {
+                        window.location.href = '/perfil';
+                    }, 4000);
+                } else {
+                    mostrarResultado('error', 'Error al agendar la cita. Por favor intenta nuevamente.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarResultado('error', 'Error de conexión. Por favor verifica tu internet e intenta nuevamente.');
+            }
+        }
+
+        function mostrarResultado(tipo, mensaje) {
+            const resultado = document.getElementById('resultado-cita');
+            resultado.className = `alert alert-${tipo === 'success' ? 'success' : 'error'}`;
+            resultado.innerHTML = mensaje;
+            resultado.style.display = 'block';
+            
+            // Scroll hacia el resultado
+            resultado.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
